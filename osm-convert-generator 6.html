@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OSM Convert Command Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function updateCommand() {
+            const inputFile = document.getElementById('inputFile').value;
+            const outputFile = document.getElementById('outputFile').value;
+            const outputFormat = document.getElementById('outputFormat').value;
+            const minLongitude = document.getElementById('minLongitude').value;
+            const minLatitude = document.getElementById('minLatitude').value;
+            const maxLongitude = document.getElementById('maxLongitude').value;
+            const maxLatitude = document.getElementById('maxLatitude').value;
+
+            let command = inputFile ? `osmconvert "${inputFile}"` : 'osmconvert';
+
+            // Custom Bounding Box
+            if (minLongitude && minLatitude && maxLongitude && maxLatitude) {
+                command += ` -b=${minLongitude},${minLatitude},${maxLongitude},${maxLatitude}`;
+            }
+
+            if (outputFormat) {
+                command += ` --out-${outputFormat}`;
+            }
+
+            if (outputFile) {
+                command += ` -o="${outputFile}"`;
+            }
+
+            const flags = [
+                'completeWays', 
+                'completeMultipolygons', 
+                'completeBoundaries', 
+                'dropAuthor', 
+                'dropBrokenRefs', 
+                'allToNodes'
+            ];
+
+            flags.forEach(flag => {
+                if (document.getElementById(flag).checked) {
+                    command += ` --${flag.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
+                }
+            });
+
+            // Autowrap the command for better readability
+            const commandLines = command.match(/.{1,80}/g);
+            document.getElementById('generatedCommand').textContent = commandLines.join('\n');
+        }
+
+        function selectFile(inputId) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.osm,.osc,.osh,.o5m,.o5c,.pbf';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                document.getElementById(inputId).value = file ? file.path : '';
+                updateCommand();
+            };
+            input.click();
+        }
+
+        function copyCommand() {
+            const commandElement = document.getElementById('generatedCommand');
+            navigator.clipboard.writeText(commandElement.textContent.replace(/\n/g, ' ')).then(() => {
+                const copyButton = document.getElementById('copyButton');
+                copyButton.textContent = 'Copied!';
+                setTimeout(() => {
+                    copyButton.textContent = 'Copy Command';
+                }, 2000);
+            });
+        }
+    </script>
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-lg">
+        <h1 class="text-2xl font-bold mb-6">OSM Convert Command Generator</h1>
+        
+        <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Minimum Longitude</label>
+                    <input type="text" id="minLongitude" class="w-full border rounded px-2 py-1" onchange="updateCommand()" placeholder="e.g. 8.123" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Maximum Longitude</label>
+                    <input type="text" id="maxLongitude" class="w-full border rounded px-2 py-1" onchange="updateCommand()" placeholder="e.g. 9.456" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Minimum Latitude</label>
+                    <input type="text" id="minLatitude" class="w-full border rounded px-2 py-1" onchange="updateCommand()" placeholder="e.g. 10.123" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Maximum Latitude</label>
+                    <input type="text" id="maxLatitude" class="w-full border rounded px-2 py-1" onchange="updateCommand()" placeholder="e.g. 11.456" />
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700">
+                    Input File
+                </label>
+                <div class="flex">
+                    <input type="text" id="inputFile" placeholder="Select input OSM file" class="flex-grow border rounded-l px-2 py-1" onchange="updateCommand()" />
+                    <button onclick="selectFile('inputFile')" class="bg-blue-500 text-white px-4 py-1 rounded-r">Browse</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Output Format</label>
+                    <select id="outputFormat" class="w-full border rounded px-2 py-1" onchange="updateCommand()">
+                        <option value="">Select Format (Optional)</option>
+                        <option value="osm">OSM</option>
+                        <option value="osc">OSC</option>
+                        <option value="osh">OSH</option>
+                        <option value="o5m">O5M</option>
+                        <option value="o5c">O5C</option>
+                        <option value="pbf">PBF</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Output File</label>
+                    <div class="flex">
+                        <input type="text" id="outputFile" placeholder="Select output file (Optional)" class="flex-grow border rounded-l px-2 py-1" onchange="updateCommand()" />
+                        <button onclick="selectFile('outputFile')" class="bg-blue-500 text-white px-4 py-1 rounded-r">Browse</button>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Optional Flags</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" id="completeWays" class="form-checkbox" onchange="updateCommand()" />
+                        <span class="ml-2">Complete Ways</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" id="completeMultipolygons" class="form-checkbox" onchange="updateCommand()" />
+                        <span class="ml-2">Complete Multipolygons</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" id="completeBoundaries" class="form-checkbox" onchange="updateCommand()" />
+                        <span class="ml-2">Complete Boundaries</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" id="dropAuthor" class="form-checkbox" onchange="updateCommand()" />
+                        <span class="ml-2">Drop Author</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" id="dropBrokenRefs" class="form-checkbox" onchange="updateCommand()" />
+                        <span class="ml-2">Drop Broken Refs</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" id="allToNodes" class="form-checkbox" onchange="updateCommand()" />
+                        <span class="ml-2">All to Nodes</span>
+                    </label>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Generated Command</label>
+                <div class="flex">
+                    <pre id="generatedCommand" class="flex-grow bg-gray-100 p-3 rounded-l-md text-sm whitespace-pre-wrap"></pre>
+                    <button id="copyButton" onclick="copyCommand()" class="bg-green-500 text-white px-4 py-1 rounded-r">Copy Command</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
