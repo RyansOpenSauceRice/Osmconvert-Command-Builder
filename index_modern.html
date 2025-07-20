@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSMConvert Command Builder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1e88e5 0%, #4caf50 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 1400px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+        
+        .form-section {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .output-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 700;
+            font-size: 2.2rem;
+            background: linear-gradient(135deg, #1e88e5, #4caf50);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            grid-column: 1 / -1;
+        }
+        
+        .section-card {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(30, 136, 229, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .section-title {
+            color: #1e88e5;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        .required {
+            color: #e53e3e;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #1e88e5;
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .input-field::placeholder {
+            color: #999;
+            font-style: italic;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: block;
+            cursor: pointer;
+            border: 2px dashed #1e88e5;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: rgba(30, 136, 229, 0.05);
+        }
+        
+        .file-input-wrapper:hover {
+            background: rgba(30, 136, 229, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .file-input-text {
+            color: #1e88e5;
+            font-weight: 500;
+        }
+        
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+        
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.5);
+            border: 2px solid transparent;
+        }
+        
+        .checkbox-option:hover {
+            background: rgba(30, 136, 229, 0.1);
+        }
+        
+        .checkbox-option input[type="checkbox"] {
+            margin-right: 10px;
+            accent-color: #1e88e5;
+            transform: scale(1.2);
+        }
+        
+        .checkbox-option:has(input[type="checkbox"]:checked) {
+            background: rgba(30, 136, 229, 0.15);
+            border-color: #1e88e5;
+        }
+        
+        .bounding-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            align-items: end;
+        }
+        
+        .bounding-box .north {
+            grid-column: 1 / -1;
+        }
+        
+        .bounding-box .south {
+            grid-column: 1 / -1;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #1e88e5, #4caf50);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #e3f2fd, #e8f5e8);
+            color: #1e88e5;
+            border: 2px solid #1e88e5;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .preview {
+            background: rgba(30, 136, 229, 0.05);
+            border-radius: 16px;
+            padding: 25px;
+            border-left: 4px solid #1e88e5;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .preview h3 {
+            color: #1e88e5;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .preview-command {
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            color: #555;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            border: 1px solid rgba(30, 136, 229, 0.2);
+        }
+        
+        .notification {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        
+        .notification.warning {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid #ffc107;
+            color: #856404;
+        }
+        
+        .notification.error {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid #dc3545;
+            color: #721c24;
+        }
+        
+        .notification.info {
+            background: rgba(30, 136, 229, 0.1);
+            border: 1px solid #1e88e5;
+            color: #0d47a1;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            color: #1e88e5;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 300px;
+            background-color: #333;
+            color: #fff;
+            text-align: left;
+            border-radius: 8px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -150px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .file-list {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            border: 1px solid rgba(30, 136, 229, 0.2);
+        }
+        
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .file-item:last-child {
+            border-bottom: none;
+        }
+        
+        .file-name {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .file-size {
+            color: #666;
+            font-size: 0.85rem;
+        }
+        
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .preview {
+                position: static;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .bounding-box {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗺️ OSMConvert Command Builder</h1>
+        
+        <div class="main-content">
+            <div class="form-section">
+                <!-- Input Files Section -->
+                <div class="section-card">
+                    <h2 class="section-title">📁 Input Files</h2>
+                    <div class="form-group">
+                        <label>Select Input File(s): <span class="required">*</span></label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="input-files" multiple accept=".osm,.osc,.osh,.o5m,.o5c,.pbf">
+                            <div class="file-input-text">
+                                📁 Click to select OSM files or drag & drop
+                            </div>
+                        </div>
+                        <div id="file-list" class="file-list" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Output Options Section -->
+                <div class="section-card">
+                    <h2 class="section-title">📤 Output Options</h2>
+                    <div class="form-group">
+                        <label for="output-format">Output Format: <span class="required">*</span></label>
+                        <select id="output-format" class="input-field">
+                            <option value=".osm">.osm (XML format)</option>
+                            <option value=".osc">.osc (Change format)</option>
+                            <option value=".osh">.osh (History format)</option>
+                            <option value=".o5m">.o5m (Binary format)</option>
+                            <option value=".o5c">.o5c (Binary change format)</option>
+                            <option value=".pbf">.pbf (Protocol Buffer format)</option>
+                            <option value=".csv">.csv (Comma-separated values)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="output-file">Output File: <span class="required">*</span></label>
+                        <input type="text" id="output-file" class="input-field" placeholder="output.osm" value="output.osm" required>
+                    </div>
+                </div>
+
+                <!-- Geographical Filters Section -->
+                <div class="section-card">
+                    <h2 class="section-title">🌍 Geographical Filters</h2>
+                    <div class="form-group">
+                        <label>Bounding Box (longitude, latitude):</label>
+                        <div class="bounding-box">
+                            <input type="number" id="north" class="input-field north" placeholder="North Latitude (top)" step="any">
+                            <input type="number" id="west" class="input-field" placeholder="West Longitude (left)" step="any">
+                            <input type="number" id="east" class="input-field" placeholder="East Longitude (right)" step="any">
+                            <input type="number" id="south" class="input-field south" placeholder="South Latitude (bottom)" step="any">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="border-polygon">Border Polygon File:</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="border-polygon" accept=".poly,.osm">
+                            <div class="file-input-text">
+                                📐 Select polygon file (.poly or .osm)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="checkbox-group">
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="complete-ways">
+                            <label for="complete-ways">Complete Ways</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="complex-multipolygons">
+                            <label for="complex-multipolygons">Complex Multipolygons/Boundaries</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="drop-broken-refs">
+                            <label for="drop-broken-refs">Drop Broken References</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Modification Section -->
+                <div class="section-card">
+                    <h2 class="section-title">✏️ Data Modification</h2>
+                    <div class="checkbox-group">
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="drop-author">
+                            <label for="drop-author">Drop Author Information</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="drop-version">
+                            <label for="drop-version">Drop Version Information</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="fake-author">
+                            <label for="fake-author">Fake Author Information</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="fake-version">
+                            <label for="fake-version">Fake Version Information</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="modify-tags">Modify Tags:</label>
+                        <textarea id="modify-tags" class="input-field" rows="3" placeholder="Example: highway=primary,secondary"></textarea>
+                    </div>
+                </div>
+
+                <!-- Advanced Options Section -->
+                <div class="section-card">
+                    <h2 class="section-title">⚙️ Advanced Options</h2>
+                    <div class="form-group">
+                        <label for="hash-memory">
+                            Hash Memory (GB): 
+                            <span class="tooltip">ℹ️
+                                <span class="tooltiptext">Memory allocated for hash tables. Higher values improve performance for large files but use more RAM. Recommended: 1-4GB for most files.</span>
+                            </span>
+                        </label>
+                        <input type="number" id="hash-memory" class="input-field" min="0.1" max="128" step="0.1" placeholder="Auto">
+                    </div>
+                    <div class="form-group">
+                        <label for="max-objects">
+                            Max Objects: 
+                            <span class="tooltip">ℹ️
+                                <span class="tooltiptext">Maximum number of objects to process. Useful for limiting memory usage or creating samples.</span>
+                            </span>
+                        </label>
+                        <input type="number" id="max-objects" class="input-field" min="1000" max="1000000000" placeholder="Unlimited">
+                    </div>
+                    <div class="form-group">
+                        <label for="max-refs">
+                            Max References: 
+                            <span class="tooltip">ℹ️
+                                <span class="tooltiptext">Maximum number of references to process. Helps control memory usage for complex datasets.</span>
+                            </span>
+                        </label>
+                        <input type="number" id="max-refs" class="input-field" min="1000" max="10000000" placeholder="Unlimited">
+                    </div>
+                    <div class="checkbox-group">
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="verbose">
+                            <label for="verbose">Verbose Mode</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="statistics">
+                            <label for="statistics">Show Statistics</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="all-to-nodes">
+                            <label for="all-to-nodes">Convert Ways/Relations to Nodes</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="generateCommand()">🔧 Generate Command</button>
+                    <button class="btn btn-secondary" onclick="copyCommand()" id="copy-btn" disabled>📋 Copy Command</button>
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <div class="preview">
+                    <h3>Generated Command</h3>
+                    <div id="notifications"></div>
+                    <div class="preview-command" id="command-preview">osmconvert</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let selectedFiles = [];
+        let generatedCommand = '';
+
+        // File handling - SAFE for large files (only reads filename and size, not content)
+        document.getElementById('input-files').addEventListener('change', function(e) {
+            selectedFiles = Array.from(e.target.files);
+            updateFileList();
+            updatePreview();
+        });
+
+        function updateFileList() {
+            const fileList = document.getElementById('file-list');
+            if (selectedFiles.length === 0) {
+                fileList.style.display = 'none';
+                return;
+            }
+
+            fileList.style.display = 'block';
+            fileList.innerHTML = selectedFiles.map(file => `
+                <div class="file-item">
+                    <span class="file-name">${file.name}</span>
+                    <span class="file-size">${formatFileSize(file.size)}</span>
+                </div>
+            `).join('');
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function clearNotifications() {
+            document.getElementById('notifications').innerHTML = '';
+        }
+
+        function showNotification(message, type = 'info') {
+            const notifications = document.getElementById('notifications');
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            notification.style.display = 'block';
+            notifications.appendChild(notification);
+        }
+
+        function validateFilename(filename) {
+            // Check for invalid characters
+            const invalidChars = /[<>:"/\\|?*\x00-\x1f]/;
+            if (invalidChars.test(filename)) {
+                return 'Filename contains invalid characters';
+            }
+
+            // Check for reserved names (Windows)
+            const reservedNames = /^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(\.|$)/i;
+            if (reservedNames.test(filename)) {
+                return 'Filename uses a reserved name';
+            }
+
+            return null;
+        }
+
+        function checkFormatMismatch() {
+            const filename = document.getElementById('output-file').value.trim();
+            const format = document.getElementById('output-format').value;
+            
+            if (filename && !filename.endsWith(format)) {
+                const expectedExt = format;
+                showNotification(`Format mismatch: Expected ${expectedExt} extension`, 'warning');
+            }
+        }
+
+        function generateCommand() {
+            clearNotifications();
+            
+            if (selectedFiles.length === 0) {
+                showNotification('Please select at least one input file', 'error');
+                return;
+            }
+
+            const outputFile = document.getElementById('output-file').value.trim();
+            if (!outputFile) {
+                showNotification('Please specify an output file', 'error');
+                return;
+            }
+
+            // Validate filename
+            const filenameError = validateFilename(outputFile);
+            if (filenameError) {
+                showNotification(filenameError, 'error');
+                return;
+            }
+
+            // Check format mismatch
+            checkFormatMismatch();
+
+            let command = 'osmconvert';
+            
+            // Add input files (only filenames, never file content)
+            selectedFiles.forEach(file => {
+                command += ` "${file.name}"`;
+            });
+
+            // Add output format
+            const format = document.getElementById('output-format').value;
+            if (format === '.osm') command += ' --out-osm';
+            else if (format === '.osc') command += ' --out-osc';
+            else if (format === '.osh') command += ' --out-osh';
+            else if (format === '.o5m') command += ' --out-o5m';
+            else if (format === '.o5c') command += ' --out-o5c';
+            else if (format === '.pbf') command += ' --out-pbf';
+            else if (format === '.csv') command += ' --out-csv';
+
+            // Add output file
+            command += ` -o="${outputFile}"`;
+
+            // Add bounding box if specified
+            const north = document.getElementById('north').value;
+            const south = document.getElementById('south').value;
+            const west = document.getElementById('west').value;
+            const east = document.getElementById('east').value;
+            
+            if (north && south && west && east) {
+                command += ` -b=${west},${south},${east},${north}`;
+            }
+
+            // Add polygon file if specified
+            const polygonFile = document.getElementById('border-polygon').files[0];
+            if (polygonFile) {
+                command += ` -B="${polygonFile.name}"`;
+            }
+
+            // Add checkboxes
+            if (document.getElementById('complete-ways').checked) command += ' --complete-ways';
+            if (document.getElementById('complex-multipolygons').checked) command += ' --complex-multipolygons';
+            if (document.getElementById('drop-broken-refs').checked) command += ' --drop-broken-refs';
+            if (document.getElementById('drop-author').checked) command += ' --drop-author';
+            if (document.getElementById('drop-version').checked) command += ' --drop-version';
+            if (document.getElementById('fake-author').checked) command += ' --fake-author';
+            if (document.getElementById('fake-version').checked) command += ' --fake-version';
+            if (document.getElementById('verbose').checked) command += ' --verbose';
+            if (document.getElementById('statistics').checked) command += ' --statistics';
+            if (document.getElementById('all-to-nodes').checked) command += ' --all-to-nodes';
+
+            // Add modify tags
+            const modifyTags = document.getElementById('modify-tags').value.trim();
+            if (modifyTags) {
+                command += ` --modify-tags="${modifyTags}"`;
+            }
+
+            // Add advanced options
+            const hashMemory = document.getElementById('hash-memory').value;
+            if (hashMemory) {
+                const hashMemoryMB = Math.round(parseFloat(hashMemory) * 1024);
+                command += ` --hash-memory=${hashMemoryMB}`;
+            }
+
+            const maxObjects = document.getElementById('max-objects').value;
+            if (maxObjects) {
+                command += ` --max-objects=${maxObjects}`;
+            }
+
+            const maxRefs = document.getElementById('max-refs').value;
+            if (maxRefs) {
+                command += ` --max-refs=${maxRefs}`;
+            }
+
+            generatedCommand = command;
+            document.getElementById('command-preview').textContent = command;
+            document.getElementById('copy-btn').disabled = false;
+        }
+
+        function generateCommandSilent() {
+            // Silent version for live preview - doesn't show notifications
+            if (selectedFiles.length === 0) return 'osmconvert';
+
+            let command = 'osmconvert';
+            
+            selectedFiles.forEach(file => {
+                command += ` "${file.name}"`;
+            });
+
+            const format = document.getElementById('output-format').value;
+            if (format === '.osm') command += ' --out-osm';
+            else if (format === '.osc') command += ' --out-osc';
+            else if (format === '.osh') command += ' --out-osh';
+            else if (format === '.o5m') command += ' --out-o5m';
+            else if (format === '.o5c') command += ' --out-o5c';
+            else if (format === '.pbf') command += ' --out-pbf';
+            else if (format === '.csv') command += ' --out-csv';
+
+            const outputFile = document.getElementById('output-file').value.trim();
+            if (outputFile) {
+                command += ` -o="${outputFile}"`;
+            }
+
+            return command;
+        }
+
+        function updatePreview() {
+            const command = generateCommandSilent();
+            document.getElementById('command-preview').textContent = command;
+        }
+
+        function copyCommand() {
+            if (!generatedCommand) {
+                showNotification('Please generate a command first', 'error');
+                return;
+            }
+
+            navigator.clipboard.writeText(generatedCommand).then(() => {
+                showNotification('Command copied to clipboard!', 'info');
+            }).catch(() => {
+                showNotification('Failed to copy command', 'error');
+            });
+        }
+
+        // Auto-update preview on input changes
+        document.querySelectorAll('input, select, textarea').forEach(element => {
+            element.addEventListener('input', updatePreview);
+            element.addEventListener('change', updatePreview);
+        });
+
+        // Special handling for format dropdown to clear notifications immediately
+        document.getElementById('output-format').addEventListener('change', function() {
+            clearNotifications();
+            setTimeout(updatePreview, 50);
+        });
+
+        // Special handling for output filename to clear notifications immediately
+        document.getElementById('output-file').addEventListener('input', function() {
+            clearNotifications();
+            setTimeout(updatePreview, 50);
+        });
+
+        // Initialize preview
+        updatePreview();
+    </script>
+</body>
+</html>

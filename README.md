@@ -2,6 +2,8 @@
 
 🗺️ A modern, intuitive web-based GUI tool for generating [osmconvert](https://wiki.openstreetmap.org/wiki/Osmconvert) commands with ease.
 
+![OSMConvert GUI Screenshot](images/osmconvert_gui_screenshot.png)
+
 ## ✨ Features
 
 - **🎨 Modern Design**: Beautiful OSM-themed interface with blue and green gradients
@@ -62,7 +64,7 @@ The tool includes intelligent memory management recommendations:
 
 For detailed information about osmconvert parameters and usage, see:
 - [OSMConvert Wiki](https://wiki.openstreetmap.org/wiki/Osmconvert)
-- [MODERNIZATION.md](MODERNIZATION.md) - Technical details about the interface improvements
+- Built-in tooltips provide context-sensitive help for all options
 
 ## 🔧 Example Commands
 
