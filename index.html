@@ -709,6 +709,18 @@
             element.addEventListener('change', updatePreview);
         });
 
+        // Special handling for format dropdown to clear notifications immediately
+        document.getElementById('output-format').addEventListener('change', function() {
+            clearNotifications();
+            setTimeout(updatePreview, 50); // Small delay to ensure DOM is updated
+        });
+
+        // Special handling for output filename to clear notifications immediately
+        document.getElementById('output-file').addEventListener('input', function() {
+            clearNotifications();
+            setTimeout(updatePreview, 50); // Small delay to ensure DOM is updated
+        });
+
         function formatFileSize(bytes) {
             if (bytes === 0) return '0 Bytes';
             const k = 1024;
