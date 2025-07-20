@@ -339,7 +339,11 @@
             background: rgba(46, 134, 171, 0.05);
             border-radius: 16px;
             border-left: 4px solid #2E86AB;
+            position: sticky;
+            top: 20px;
             height: fit-content;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
         }
         
         .preview h3 {
@@ -834,12 +838,45 @@
                 valid = false;
             }
 
-            // Output options
+            // Output options with validation
             const outputFormat = document.getElementById('output-format').value;
             const outputFile = document.getElementById('output-file');
-            if (outputFile.value.trim()) {
-                command += ` --out-${outputFormat} -o=${outputFile.value.trim()}`;
-                outputFile.classList.remove('invalid');
+            const outputFileName = outputFile.value.trim();
+            
+            if (outputFileName) {
+                // Validate filename characters (Linux/Windows safe)
+                const invalidChars = /[<>:"|?*\x00-\x1f]/;
+                const invalidNames = /^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$/i;
+                
+                if (invalidChars.test(outputFileName)) {
+                    outputFile.classList.add('invalid');
+                    errors.push('Output filename contains invalid characters. Avoid: < > : " | ? * and control characters');
+                    valid = false;
+                } else if (invalidNames.test(outputFileName.split('.')[0])) {
+                    outputFile.classList.add('invalid');
+                    errors.push('Output filename uses a reserved name. Avoid: CON, PRN, AUX, NUL, COM1-9, LPT1-9');
+                    valid = false;
+                } else {
+                    // Check if file extension matches selected format
+                    const expectedExt = outputFormat === 'osm' ? '.osm' : 
+                                      outputFormat === 'osc' ? '.osc' :
+                                      outputFormat === 'osh' ? '.osh' :
+                                      outputFormat === 'o5m' ? '.o5m' :
+                                      outputFormat === 'o5c' ? '.o5c' :
+                                      outputFormat === 'pbf' ? '.pbf' :
+                                      outputFormat === 'csv' ? '.csv' : '';
+                    
+                    if (expectedExt && !outputFileName.toLowerCase().endsWith(expectedExt)) {
+                        // Warning, not error - user might know what they're doing
+                        showNotification(
+                            `⚠️ Filename extension doesn't match selected format. Expected: ${expectedExt}`,
+                            'info'
+                        );
+                    }
+                    
+                    command += ` --out-${outputFormat} -o=${outputFileName}`;
+                    outputFile.classList.remove('invalid');
+                }
             } else {
                 outputFile.classList.add('invalid');
                 errors.push('Please specify an output file name');
@@ -943,10 +980,80 @@
         function updatePreview() {
             // Generate command silently for preview
             try {
-                const command = generateCommand();
+                const command = generateCommandSilent();
+                document.getElementById('command-preview').textContent = command;
             } catch (e) {
                 // Ignore errors during preview updates
+                document.getElementById('command-preview').textContent = 'osmconvert [configure options above]';
             }
+        }
+
+        function generateCommandSilent() {
+            // Same as generateCommand but without validation errors/notifications
+            let command = "osmconvert";
+
+            // Input files - only use filenames
+            const inputFiles = document.getElementById('input-file').files;
+            if (inputFiles.length > 0) {
+                const fileNames = Array.from(inputFiles).map(file => file.name).join(' ');
+                command += ` ${fileNames}`;
+            }
+
+            // Output options (simplified for preview)
+            const outputFormat = document.getElementById('output-format').value;
+            const outputFileName = document.getElementById('output-file').value.trim();
+            if (outputFileName) {
+                command += ` --out-${outputFormat} -o=${outputFileName}`;
+            }
+
+            // Bounding Box
+            const west = document.getElementById('west').value.trim();
+            const south = document.getElementById('south').value.trim();
+            const east = document.getElementById('east').value.trim();
+            const north = document.getElementById('north').value.trim();
+            if (west && south && east && north) {
+                command += ` -b=${west},${south},${east},${north}`;
+            }
+
+            // Border polygon
+            const borderPolygon = document.getElementById('border-polygon').files[0];
+            if (borderPolygon) {
+                command += ` -B=${borderPolygon.name}`;
+            }
+
+            // Geographical options
+            if (document.getElementById('complete-ways').checked) command += ` --complete-ways`;
+            if (document.getElementById('complex-multipolygons').checked) command += ` --complex-multipolygons`;
+            if (document.getElementById('drop-broken-refs').checked) command += ` --drop-broken-refs`;
+
+            // Data modification options
+            if (document.getElementById('drop-author').checked) command += ` --drop-author`;
+            if (document.getElementById('drop-version').checked) command += ` --drop-version`;
+            if (document.getElementById('fake-author').checked) command += ` --fake-author`;
+            if (document.getElementById('fake-version').checked) command += ` --fake-version`;
+
+            // Modify tags
+            const modifyTags = document.getElementById('modify-tags').value.trim();
+            if (modifyTags) command += ` --modify-tags="${modifyTags}"`;
+
+            // Advanced options
+            const hashMemory = document.getElementById('hash-memory').value;
+            if (hashMemory) {
+                const memoryMB = Math.round(parseFloat(hashMemory) * 1024);
+                command += ` --hash-memory=${memoryMB}`;
+            }
+
+            const maxObjects = document.getElementById('max-objects').value;
+            if (maxObjects) command += ` --max-objects=${maxObjects}`;
+
+            const maxRefs = document.getElementById('max-refs').value;
+            if (maxRefs) command += ` --max-refs=${maxRefs}`;
+
+            if (document.getElementById('verbose').checked) command += ` --verbose`;
+            if (document.getElementById('statistics').checked) command += ` --statistics`;
+            if (document.getElementById('all-to-nodes').checked) command += ` --all-to-nodes`;
+
+            return command;
         }
 
         function copyCommand() {

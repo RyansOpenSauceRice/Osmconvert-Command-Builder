@@ -62,7 +62,7 @@ The tool includes intelligent memory management recommendations:
 
 For detailed information about osmconvert parameters and usage, see:
 - [OSMConvert Wiki](https://wiki.openstreetmap.org/wiki/Osmconvert)
-- [MODERNIZATION.md](MODERNIZATION.md) - Technical details about the interface improvements
+- Built-in tooltips provide context-sensitive help for all options
 
 ## 🔧 Example Commands
 
