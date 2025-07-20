@@ -84,6 +84,51 @@
             color: #555;
             font-weight: 600;
             font-size: 0.95rem;
+            position: relative;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            margin-left: 5px;
+            color: #2E86AB;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 300px;
+            background-color: #333;
+            color: #fff;
+            text-align: left;
+            border-radius: 8px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -150px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
         }
         
         .input-field {
@@ -151,10 +196,23 @@
             color: #555;
         }
         
-        .bbox-grid {
+        .bbox-container {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 10px;
+        }
+        
+        .bbox-row {
+            display: grid;
+            gap: 10px;
+        }
+        
+        .bbox-row.single {
+            grid-template-columns: 1fr;
+        }
+        
+        .bbox-row.double {
+            grid-template-columns: 1fr 1fr;
         }
         
         .checkbox-group {
@@ -306,6 +364,7 @@
             transform: translateY(-20px);
             transition: all 0.3s ease;
             z-index: 1000;
+            max-width: 400px;
         }
         
         .toast.show {
@@ -315,6 +374,43 @@
         
         .toast.error {
             background: #f44336;
+        }
+        
+        .toast.warning {
+            background: #ff9800;
+        }
+        
+        .toast.info {
+            background: #2196f3;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: #ff9800;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+            z-index: 999;
+            max-width: 350px;
+            font-size: 0.9rem;
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .notification .close-btn {
+            float: right;
+            margin-left: 10px;
+            cursor: pointer;
+            font-weight: bold;
         }
         
         .required::after {
@@ -345,7 +441,7 @@
                 font-size: 1.8rem;
             }
             
-            .bbox-grid {
+            .bbox-row.double {
                 grid-template-columns: 1fr;
             }
             
@@ -359,6 +455,11 @@
             
             .main-content {
                 gap: 20px;
+            }
+            
+            .tooltip .tooltiptext {
+                width: 250px;
+                margin-left: -125px;
             }
         }
     </style>
@@ -393,6 +494,7 @@
                         <option value="o5m">.o5m (Binary format)</option>
                         <option value="o5c">.o5c (Binary change format)</option>
                         <option value="pbf">.pbf (Protocol Buffer format)</option>
+                        <option value="csv">.csv (Comma-separated values)</option>
                     </select>
                     <label for="output-file" class="required">Output File:</label>
                     <input type="text" id="output-file" class="input-field" placeholder="output.osm" required>
@@ -402,11 +504,17 @@
                 <div class="form-group">
                     <h3>Geographical Filters</h3>
                     <label>Bounding Box (longitude, latitude):</label>
-                    <div class="bbox-grid">
-                        <input type="text" id="x1" class="input-field" placeholder="Min Longitude (x1)">
-                        <input type="text" id="y1" class="input-field" placeholder="Min Latitude (y1)">
-                        <input type="text" id="x2" class="input-field" placeholder="Max Longitude (x2)">
-                        <input type="text" id="y2" class="input-field" placeholder="Max Latitude (y2)">
+                    <div class="bbox-container">
+                        <div class="bbox-row single">
+                            <input type="text" id="north" class="input-field" placeholder="North Latitude (top)">
+                        </div>
+                        <div class="bbox-row double">
+                            <input type="text" id="west" class="input-field" placeholder="West Longitude (left)">
+                            <input type="text" id="east" class="input-field" placeholder="East Longitude (right)">
+                        </div>
+                        <div class="bbox-row single">
+                            <input type="text" id="south" class="input-field" placeholder="South Latitude (bottom)">
+                        </div>
                     </div>
                     
                     <label for="border-polygon">Border Polygon File:</label>
@@ -427,6 +535,10 @@
                             <input type="checkbox" id="complex-multipolygons">
                             <label for="complex-multipolygons">Complex Multipolygons/Boundaries</label>
                         </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="drop-broken-refs">
+                            <label for="drop-broken-refs">Drop Broken References</label>
+                        </div>
                     </div>
                 </div>
 
@@ -442,6 +554,14 @@
                             <input type="checkbox" id="drop-version">
                             <label for="drop-version">Drop Version Information</label>
                         </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fake-author">
+                            <label for="fake-author">Fake Author Information</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fake-version">
+                            <label for="fake-version">Fake Version Information</label>
+                        </div>
                     </div>
                     <label for="modify-tags">Modify Tags:</label>
                     <textarea id="modify-tags" class="textarea-field" placeholder="e.g., highway=primary to =secondary"></textarea>
@@ -450,14 +570,48 @@
                 <!-- Advanced Options -->
                 <div class="form-group">
                     <h3>Advanced Options</h3>
-                    <label for="hash-memory">Hash Memory (MB):</label>
-                    <input type="number" id="hash-memory" class="input-field" placeholder="1200" min="100" max="10000">
-                    <label for="max-objects">Max Objects:</label>
-                    <input type="number" id="max-objects" class="input-field" placeholder="25000000" min="1000" max="100000000">
+                    <label for="hash-memory">
+                        Hash Memory (GB):
+                        <span class="tooltip">ℹ️
+                            <span class="tooltiptext">
+                                Memory used for hash tables to track OSM objects during processing. Higher values improve performance for large files but use more RAM. Default is 1.2GB split between nodes (80%), ways (12.5%), and relations (7.5%). Recommended: 25-50% of available RAM minus 8GB for system.
+                            </span>
+                        </span>
+                    </label>
+                    <input type="number" id="hash-memory" class="input-field" placeholder="1.2" min="0.1" max="64" step="0.1">
+                    
+                    <label for="max-objects">
+                        Max Objects:
+                        <span class="tooltip">ℹ️
+                            <span class="tooltiptext">
+                                Maximum number of OSM objects that can be processed when using --all-to-nodes option. Increase if processing very large datasets. Default: 25 million objects.
+                            </span>
+                        </span>
+                    </label>
+                    <input type="number" id="max-objects" class="input-field" placeholder="25000000" min="1000" max="1000000000">
+                    
+                    <label for="max-refs">
+                        Max References:
+                        <span class="tooltip">ℹ️
+                            <span class="tooltiptext">
+                                Maximum number of node references per way. Increase if working with complex geometries from converted shapefiles. Default: 100,000 references per way.
+                            </span>
+                        </span>
+                    </label>
+                    <input type="number" id="max-refs" class="input-field" placeholder="100000" min="1000" max="10000000">
+                    
                     <div class="checkbox-group">
                         <div class="checkbox-item">
                             <input type="checkbox" id="verbose">
                             <label for="verbose">Verbose Mode</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="statistics">
+                            <label for="statistics">Show Statistics</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="all-to-nodes">
+                            <label for="all-to-nodes">Convert Ways/Relations to Nodes</label>
                         </div>
                     </div>
                 </div>
@@ -478,8 +632,14 @@
     </div>
     
     <div class="toast" id="toast"></div>
+    <div class="notification" id="notification" style="display: none;">
+        <span class="close-btn" onclick="dismissNotification()">&times;</span>
+        <div id="notification-content"></div>
+    </div>
     
     <script>
+        let notificationDismissed = false;
+        
         // File input handlers
         document.getElementById('input-file').addEventListener('change', function(e) {
             const files = Array.from(e.target.files);
@@ -508,6 +668,14 @@
             updatePreview();
         });
 
+        // Hash memory change handler with smart notification
+        document.getElementById('hash-memory').addEventListener('input', function(e) {
+            const value = parseFloat(e.target.value);
+            if (value && !notificationDismissed) {
+                checkMemoryUsage(value);
+            }
+        });
+
         // Auto-update preview on input changes
         document.querySelectorAll('input, select, textarea').forEach(element => {
             element.addEventListener('input', updatePreview);
@@ -520,6 +688,25 @@
             const sizes = ['Bytes', 'KB', 'MB', 'GB'];
             const i = Math.floor(Math.log(bytes) / Math.log(k));
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function checkMemoryUsage(memoryGB) {
+            // Estimate system memory and provide smart recommendations
+            const estimatedSystemRAM = navigator.deviceMemory || 8; // GB, fallback to 8GB
+            const recommendedMax = Math.max(0.5, estimatedSystemRAM - 8); // Leave 8GB for system
+            const conservativeMax = estimatedSystemRAM * 0.5; // 50% of total RAM
+            
+            if (memoryGB > recommendedMax && memoryGB <= conservativeMax) {
+                showNotification(
+                    `⚠️ Using ${memoryGB}GB hash memory. Your system has ~${estimatedSystemRAM}GB RAM. Consider leaving at least 8GB for the system. Recommended max: ${recommendedMax.toFixed(1)}GB`,
+                    'warning'
+                );
+            } else if (memoryGB > conservativeMax) {
+                showNotification(
+                    `🚨 High memory usage: ${memoryGB}GB hash memory on ~${estimatedSystemRAM}GB system. This may cause performance issues. Consider reducing to ${conservativeMax.toFixed(1)}GB or less.`,
+                    'warning'
+                );
+            }
         }
 
         function generateCommand() {
@@ -553,19 +740,19 @@
                 valid = false;
             }
 
-            // Bounding Box
-            const x1 = document.getElementById('x1').value.trim();
-            const y1 = document.getElementById('y1').value.trim();
-            const x2 = document.getElementById('x2').value.trim();
-            const y2 = document.getElementById('y2').value.trim();
+            // Bounding Box - using proper WSEN order (west, south, east, north)
+            const west = document.getElementById('west').value.trim();
+            const south = document.getElementById('south').value.trim();
+            const east = document.getElementById('east').value.trim();
+            const north = document.getElementById('north').value.trim();
             
-            if (x1 || y1 || x2 || y2) {
-                if (x1 && y1 && x2 && y2) {
-                    command += ` -b=${x1},${y1},${x2},${y2}`;
+            if (west || south || east || north) {
+                if (west && south && east && north) {
+                    command += ` -b=${west},${south},${east},${north}`;
                 } else {
                     errors.push('All bounding box coordinates must be provided if using bounding box');
-                    [x1, y1, x2, y2].forEach((val, idx) => {
-                        const inputs = ['x1', 'y1', 'x2', 'y2'];
+                    [west, south, east, north].forEach((val, idx) => {
+                        const inputs = ['west', 'south', 'east', 'north'];
                         if (!val) document.getElementById(inputs[idx]).classList.add('invalid');
                     });
                     valid = false;
@@ -578,18 +765,29 @@
                 command += ` -B=${borderPolygon.name}`;
             }
 
-            // Other options
+            // Geographical options
             if (document.getElementById('complete-ways').checked) {
                 command += ` --complete-ways`;
             }
             if (document.getElementById('complex-multipolygons').checked) {
                 command += ` --complex-multipolygons`;
             }
+            if (document.getElementById('drop-broken-refs').checked) {
+                command += ` --drop-broken-refs`;
+            }
+
+            // Data modification options
             if (document.getElementById('drop-author').checked) {
                 command += ` --drop-author`;
             }
             if (document.getElementById('drop-version').checked) {
                 command += ` --drop-version`;
+            }
+            if (document.getElementById('fake-author').checked) {
+                command += ` --fake-author`;
+            }
+            if (document.getElementById('fake-version').checked) {
+                command += ` --fake-version`;
             }
 
             const modifyTags = document.getElementById('modify-tags').value.trim();
@@ -597,9 +795,12 @@
                 command += ` --modify-tags="${modifyTags}"`;
             }
 
+            // Advanced options
             const hashMemory = document.getElementById('hash-memory').value.trim();
             if (hashMemory) {
-                command += ` --hash-memory=${hashMemory}`;
+                // Convert GB to MB for osmconvert
+                const hashMemoryMB = Math.round(parseFloat(hashMemory) * 1024);
+                command += ` --hash-memory=${hashMemoryMB}`;
             }
 
             const maxObjects = document.getElementById('max-objects').value.trim();
@@ -607,8 +808,19 @@
                 command += ` --max-objects=${maxObjects}`;
             }
 
+            const maxRefs = document.getElementById('max-refs').value.trim();
+            if (maxRefs) {
+                command += ` --max-refs=${maxRefs}`;
+            }
+
             if (document.getElementById('verbose').checked) {
                 command += ` --verbose`;
+            }
+            if (document.getElementById('statistics').checked) {
+                command += ` --statistics`;
+            }
+            if (document.getElementById('all-to-nodes').checked) {
+                command += ` --all-to-nodes`;
             }
 
             // Display command or errors
@@ -651,6 +863,31 @@
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 3000);
+        }
+
+        function showNotification(message, type = 'info') {
+            if (notificationDismissed) return;
+            
+            const notification = document.getElementById('notification');
+            const content = document.getElementById('notification-content');
+            
+            content.innerHTML = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+        }
+
+        function dismissNotification() {
+            const notification = document.getElementById('notification');
+            notification.classList.remove('show');
+            notificationDismissed = true;
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 300);
         }
 
         // Initialize preview
