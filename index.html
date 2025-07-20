@@ -574,7 +574,7 @@
                         Hash Memory (GB):
                         <span class="tooltip">ℹ️
                             <span class="tooltiptext">
-                                Memory used for hash tables to track OSM objects during processing. Higher values improve performance for large files but use more RAM. Default is 1.2GB split between nodes (80%), ways (12.5%), and relations (7.5%). Recommended: 25-50% of available RAM minus 8GB for system.
+                                Memory used for hash tables to track OSM objects during processing. Higher values improve performance for large files but use more RAM. Default is 1.2GB split between nodes (80%), ways (12.5%), and relations (7.5%). Recommendations: 1-4GB for small extracts, 8-16GB for countries, 32GB+ for planet files. Adjust based on your system's available RAM.
                             </span>
                         </span>
                     </label>
@@ -691,22 +691,27 @@
         }
 
         function checkMemoryUsage(memoryGB) {
-            // Estimate system memory and provide smart recommendations
-            const estimatedSystemRAM = navigator.deviceMemory || 8; // GB, fallback to 8GB
-            const recommendedMax = Math.max(0.5, estimatedSystemRAM - 8); // Leave 8GB for system
-            const conservativeMax = estimatedSystemRAM * 0.5; // 50% of total RAM
+            // Get system memory info - navigator.deviceMemory is limited and often inaccurate
+            const reportedRAM = navigator.deviceMemory || null; // GB, often capped at 8GB even on high-end systems
             
-            if (memoryGB > recommendedMax && memoryGB <= conservativeMax) {
+            // Smart recommendations based on hash memory value rather than unreliable system detection
+            if (memoryGB > 32) {
                 showNotification(
-                    `⚠️ Using ${memoryGB}GB hash memory. Your system has ~${estimatedSystemRAM}GB RAM. Consider leaving at least 8GB for the system. Recommended max: ${recommendedMax.toFixed(1)}GB`,
+                    `🚨 Very high memory usage: ${memoryGB}GB hash memory. This is suitable for systems with 64GB+ RAM and very large OSM datasets (planet files). Ensure your system has sufficient RAM.`,
                     'warning'
                 );
-            } else if (memoryGB > conservativeMax) {
+            } else if (memoryGB > 16) {
                 showNotification(
-                    `🚨 High memory usage: ${memoryGB}GB hash memory on ~${estimatedSystemRAM}GB system. This may cause performance issues. Consider reducing to ${conservativeMax.toFixed(1)}GB or less.`,
-                    'warning'
+                    `⚠️ High memory usage: ${memoryGB}GB hash memory. This is suitable for systems with 32GB+ RAM processing large regional extracts. Monitor system performance.`,
+                    'info'
+                );
+            } else if (memoryGB > 8) {
+                showNotification(
+                    `💡 Moderate memory usage: ${memoryGB}GB hash memory. Good for systems with 16GB+ RAM processing country-level extracts.`,
+                    'info'
                 );
             }
+            // No notification for <= 8GB as that's reasonable for most systems
         }
 
         function generateCommand() {
