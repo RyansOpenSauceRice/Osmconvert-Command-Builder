@@ -13,7 +13,7 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #2E86AB 0%, #A23B72 50%, #7CB342 100%);
+            background: linear-gradient(135deg, #0066CC 0%, #7EBC6F 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -55,8 +55,8 @@
             color: #333;
             margin-bottom: 30px;
             font-weight: 700;
-            font-size: 2.2rem;
-            background: linear-gradient(135deg, #2E86AB, #7CB342);
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #0066CC, #7EBC6F);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -66,16 +66,20 @@
         .form-group {
             margin-bottom: 25px;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(5px);
             border-radius: 16px;
-            border: 1px solid rgba(46, 134, 171, 0.2);
+            border: 1px solid rgba(0, 102, 204, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
         
         .form-group h3 {
-            color: #2E86AB;
+            color: #0066CC;
             margin-bottom: 15px;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 600;
+            border-bottom: 2px solid #0066CC;
+            padding-bottom: 8px;
         }
         
         .form-group label {
@@ -92,7 +96,8 @@
             display: inline-block;
             cursor: help;
             margin-left: 5px;
-            color: #2E86AB;
+            color: #0066CC;
+            font-weight: 600;
         }
         
         .tooltip .tooltiptext {
@@ -144,8 +149,8 @@
         
         .input-field:focus {
             outline: none;
-            border-color: #2E86AB;
-            box-shadow: 0 0 0 3px rgba(46, 134, 171, 0.1);
+            border-color: #0066CC;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
             transform: translateY(-1px);
         }
         
@@ -170,30 +175,37 @@
         
         .file-input-label {
             display: block;
-            padding: 12px 16px;
-            border: 2px dashed #2E86AB;
+            padding: 16px 20px;
+            border: 2px dashed #0066CC;
             border-radius: 12px;
-            background: rgba(46, 134, 171, 0.05);
+            background: rgba(0, 102, 204, 0.05);
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            color: #2E86AB;
-            font-weight: 500;
+            color: #0066CC;
+            font-weight: 600;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .file-input-label:hover {
-            background: rgba(46, 134, 171, 0.1);
-            border-color: #7CB342;
-            color: #7CB342;
+            background: rgba(0, 102, 204, 0.1);
+            border-color: #7EBC6F;
+            color: #7EBC6F;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 102, 204, 0.2);
         }
         
         .file-list {
-            margin-top: 10px;
-            padding: 10px;
-            background: rgba(124, 179, 66, 0.1);
-            border-radius: 8px;
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(0, 102, 204, 0.1);
+            border-radius: 12px;
             font-size: 0.9rem;
             color: #555;
+            border-left: 4px solid #0066CC;
         }
         
         .bbox-container {
@@ -574,11 +586,22 @@
                         Hash Memory (GB):
                         <span class="tooltip">ℹ️
                             <span class="tooltiptext">
-                                Memory used for hash tables to track OSM objects during processing. Higher values improve performance for large files but use more RAM. Default is 1.2GB split between nodes (80%), ways (12.5%), and relations (7.5%). Recommendations: 1-4GB for small extracts, 8-16GB for countries, 32GB+ for planet files. Adjust based on your system's available RAM.
+                                Memory used for hash tables to track OSM objects during processing. Higher values improve performance for large files but use more RAM. Default is 1.2GB split between nodes (80%), ways (12.5%), and relations (7.5%).<br><br>
+                                <strong>Recommendations by system:</strong><br>
+                                • 16GB RAM: 1-8GB hash memory<br>
+                                • 32GB RAM: 8-24GB hash memory<br>
+                                • 64GB RAM: 16-48GB hash memory<br>
+                                • 128GB RAM: 32-96GB hash memory<br><br>
+                                <strong>By dataset size:</strong><br>
+                                • Small extracts: 1-4GB<br>
+                                • Countries: 8-16GB<br>
+                                • Large regions: 16-32GB<br>
+                                • Planet files: 32GB+<br><br>
+                                Reserve ~8GB for system operations. The tool will warn if values seem too high for your detected system.
                             </span>
                         </span>
                     </label>
-                    <input type="number" id="hash-memory" class="input-field" placeholder="1.2" min="0.1" max="64" step="0.1">
+                    <input type="number" id="hash-memory" class="input-field" placeholder="1.2" min="0.1" max="128" step="0.1">
                     
                     <label for="max-objects">
                         Max Objects:
@@ -671,7 +694,7 @@
         // Hash memory change handler with smart notification
         document.getElementById('hash-memory').addEventListener('input', function(e) {
             const value = parseFloat(e.target.value);
-            if (value && !notificationDismissed) {
+            if (value) {
                 checkMemoryUsage(value);
             }
         });
@@ -690,28 +713,106 @@
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
 
-        function checkMemoryUsage(memoryGB) {
-            // Get system memory info - navigator.deviceMemory is limited and often inaccurate
-            const reportedRAM = navigator.deviceMemory || null; // GB, often capped at 8GB even on high-end systems
+        function detectSystemMemory() {
+            // Try multiple methods to detect system memory
+            let detectedRAM = null;
+            let detectionMethod = 'unknown';
             
-            // Smart recommendations based on hash memory value rather than unreliable system detection
-            if (memoryGB > 32) {
+            // Method 1: navigator.deviceMemory (limited, often capped at 8GB)
+            if (navigator.deviceMemory) {
+                detectedRAM = navigator.deviceMemory;
+                detectionMethod = 'deviceMemory';
+            }
+            
+            // Method 2: Try to estimate from performance characteristics
+            if (!detectedRAM || detectedRAM <= 8) {
+                try {
+                    // Use performance.memory if available (Chrome/Edge)
+                    if (performance.memory) {
+                        const jsHeapLimit = performance.memory.jsHeapSizeLimit;
+                        // Rough estimation: JS heap limit is typically 1/4 to 1/8 of total RAM
+                        const estimatedRAM = Math.round((jsHeapLimit / (1024 * 1024 * 1024)) * 6);
+                        if (estimatedRAM > detectedRAM) {
+                            detectedRAM = estimatedRAM;
+                            detectionMethod = 'jsHeapEstimate';
+                        }
+                    }
+                } catch (e) {
+                    // Ignore errors
+                }
+            }
+            
+            // Method 3: Hardware concurrency hint (very rough estimate)
+            if (!detectedRAM || detectedRAM <= 8) {
+                const cores = navigator.hardwareConcurrency || 4;
+                // Very rough estimate: 2-4GB per core for modern systems
+                const estimatedRAM = cores * 3;
+                if (estimatedRAM > detectedRAM) {
+                    detectedRAM = estimatedRAM;
+                    detectionMethod = 'coreEstimate';
+                }
+            }
+            
+            return { ram: detectedRAM, method: detectionMethod };
+        }
+
+        function checkMemoryUsage(memoryGB) {
+            const systemInfo = detectSystemMemory();
+            const detectedRAM = systemInfo.ram;
+            const detectionMethod = systemInfo.method;
+            
+            // Dynamic thresholds based on detected system memory
+            let highThreshold, veryHighThreshold, moderateThreshold;
+            let systemContext = '';
+            
+            if (detectedRAM && detectedRAM >= 64) {
+                // High-end system (64GB+)
+                moderateThreshold = 16;
+                highThreshold = 48;
+                veryHighThreshold = Math.max(64, detectedRAM * 0.75); // 75% of detected RAM
+                systemContext = ` (Detected: ~${detectedRAM}GB RAM)`;
+            } else if (detectedRAM && detectedRAM >= 32) {
+                // Mid-high system (32-64GB)
+                moderateThreshold = 12;
+                highThreshold = 24;
+                veryHighThreshold = 40;
+                systemContext = ` (Detected: ~${detectedRAM}GB RAM)`;
+            } else if (detectedRAM && detectedRAM >= 16) {
+                // Mid-range system (16-32GB)
+                moderateThreshold = 8;
+                highThreshold = 16;
+                veryHighThreshold = 24;
+                systemContext = ` (Detected: ~${detectedRAM}GB RAM)`;
+            } else {
+                // Default/low-end system or detection failed
+                moderateThreshold = 8;
+                highThreshold = 16;
+                veryHighThreshold = 32;
+                if (detectedRAM) {
+                    systemContext = ` (Detected: ~${detectedRAM}GB RAM)`;
+                } else {
+                    systemContext = ' (RAM detection limited by browser)';
+                }
+            }
+            
+            // Apply dynamic thresholds - warn about potential issues, not system requirements
+            if (memoryGB > veryHighThreshold) {
                 showNotification(
-                    `🚨 Very high memory usage: ${memoryGB}GB hash memory. This is suitable for systems with 64GB+ RAM and very large OSM datasets (planet files). Ensure your system has sufficient RAM.`,
+                    `🚨 Warning: ${memoryGB}GB hash memory may exceed your system capacity${systemContext}. This could cause performance issues or system instability. Consider reducing if you experience problems.`,
                     'warning'
                 );
-            } else if (memoryGB > 16) {
+            } else if (memoryGB > highThreshold) {
                 showNotification(
-                    `⚠️ High memory usage: ${memoryGB}GB hash memory. This is suitable for systems with 32GB+ RAM processing large regional extracts. Monitor system performance.`,
+                    `⚠️ Caution: ${memoryGB}GB hash memory is high for your system${systemContext}. Monitor performance and reduce if you experience slowdowns or memory pressure.`,
                     'info'
                 );
-            } else if (memoryGB > 8) {
+            } else if (memoryGB > moderateThreshold) {
                 showNotification(
-                    `💡 Moderate memory usage: ${memoryGB}GB hash memory. Good for systems with 16GB+ RAM processing country-level extracts.`,
+                    `💡 Notice: ${memoryGB}GB hash memory is moderate usage${systemContext}. Should work fine, but watch for any performance issues during processing.`,
                     'info'
                 );
             }
-            // No notification for <= 8GB as that's reasonable for most systems
+            // No notification for values below moderate threshold
         }
 
         function generateCommand() {
@@ -871,8 +972,6 @@
         }
 
         function showNotification(message, type = 'info') {
-            if (notificationDismissed) return;
-            
             const notification = document.getElementById('notification');
             const content = document.getElementById('notification-content');
             
@@ -888,7 +987,6 @@
         function dismissNotification() {
             const notification = document.getElementById('notification');
             notification.classList.remove('show');
-            notificationDismissed = true;
             
             setTimeout(() => {
                 notification.style.display = 'none';
