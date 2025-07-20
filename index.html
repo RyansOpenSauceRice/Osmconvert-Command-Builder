@@ -977,14 +977,47 @@
             return command;
         }
 
+        function clearNotifications() {
+            // Clear any existing notifications
+            const existingToasts = document.querySelectorAll('.toast');
+            existingToasts.forEach(toast => toast.remove());
+        }
+
         function updatePreview() {
             // Generate command silently for preview
             try {
                 const command = generateCommandSilent();
                 document.getElementById('command-preview').textContent = command;
+                
+                // Clear old notifications and check for format mismatch
+                clearNotifications();
+                checkFormatMismatch();
             } catch (e) {
                 // Ignore errors during preview updates
                 document.getElementById('command-preview').textContent = 'osmconvert [configure options above]';
+            }
+        }
+
+        function checkFormatMismatch() {
+            // Check format/extension mismatch for preview
+            const outputFormat = document.getElementById('output-format').value;
+            const outputFileName = document.getElementById('output-file').value.trim();
+            
+            if (outputFileName) {
+                const expectedExt = outputFormat === 'osm' ? '.osm' : 
+                                  outputFormat === 'osc' ? '.osc' :
+                                  outputFormat === 'osh' ? '.osh' :
+                                  outputFormat === 'o5m' ? '.o5m' :
+                                  outputFormat === 'o5c' ? '.o5c' :
+                                  outputFormat === 'pbf' ? '.pbf' :
+                                  outputFormat === 'csv' ? '.csv' : '';
+                
+                if (expectedExt && !outputFileName.toLowerCase().endsWith(expectedExt)) {
+                    showNotification(
+                        `⚠️ Filename extension doesn't match selected format. Expected: ${expectedExt}`,
+                        'info'
+                    );
+                }
             }
         }
 
