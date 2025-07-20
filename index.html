@@ -13,7 +13,7 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #0066CC 0%, #7EBC6F 100%);
+            background: linear-gradient(135deg, #1e88e5 0%, #4caf50 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -42,6 +42,7 @@
         .form-section {
             display: flex;
             flex-direction: column;
+            gap: 25px;
         }
         
         .output-section {
@@ -55,31 +56,34 @@
             color: #333;
             margin-bottom: 30px;
             font-weight: 700;
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, #0066CC, #7EBC6F);
+            font-size: 2.2rem;
+            background: linear-gradient(135deg, #1e88e5, #4caf50);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             grid-column: 1 / -1;
         }
         
-        .form-group {
-            margin-bottom: 25px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(5px);
+        .section-card {
+            background: rgba(255, 255, 255, 0.8);
             border-radius: 16px;
-            border: 1px solid rgba(0, 102, 204, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            border: 1px solid rgba(30, 136, 229, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
         
-        .form-group h3 {
-            color: #0066CC;
-            margin-bottom: 15px;
+        .section-title {
+            color: #1e88e5;
             font-size: 1.3rem;
             font-weight: 600;
-            border-bottom: 2px solid #0066CC;
-            padding-bottom: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
         }
         
         .form-group label {
@@ -88,52 +92,10 @@
             color: #555;
             font-weight: 600;
             font-size: 0.95rem;
-            position: relative;
         }
         
-        .tooltip {
-            position: relative;
-            display: inline-block;
-            cursor: help;
-            margin-left: 5px;
-            color: #0066CC;
-            font-weight: 600;
-        }
-        
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 300px;
-            background-color: #333;
-            color: #fff;
-            text-align: left;
-            border-radius: 8px;
-            padding: 10px;
-            position: absolute;
-            z-index: 1000;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -150px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 0.85rem;
-            line-height: 1.4;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-        
-        .tooltip .tooltiptext::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: #333 transparent transparent transparent;
-        }
-        
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
+        .required {
+            color: #e53e3e;
         }
         
         .input-field {
@@ -143,14 +105,13 @@
             border-radius: 12px;
             font-size: 16px;
             transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.8);
-            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.9);
         }
         
         .input-field:focus {
             outline: none;
-            border-color: #0066CC;
-            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+            border-color: #1e88e5;
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
             transform: translateY(-1px);
         }
         
@@ -161,11 +122,22 @@
         
         .file-input-wrapper {
             position: relative;
-            display: inline-block;
-            width: 100%;
+            display: block;
+            cursor: pointer;
+            border: 2px dashed #1e88e5;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: rgba(30, 136, 229, 0.05);
         }
         
-        .file-input {
+        .file-input-wrapper:hover {
+            background: rgba(30, 136, 229, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .file-input-wrapper input[type="file"] {
             position: absolute;
             opacity: 0;
             width: 100%;
@@ -173,137 +145,66 @@
             cursor: pointer;
         }
         
-        .file-input-label {
-            display: block;
-            padding: 16px 20px;
-            border: 2px dashed #0066CC;
-            border-radius: 12px;
-            background: rgba(0, 102, 204, 0.05);
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: #0066CC;
-            font-weight: 600;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .file-input-label:hover {
-            background: rgba(0, 102, 204, 0.1);
-            border-color: #7EBC6F;
-            color: #7EBC6F;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 102, 204, 0.2);
-        }
-        
-        .file-list {
-            margin-top: 15px;
-            padding: 15px;
-            background: rgba(0, 102, 204, 0.1);
-            border-radius: 12px;
-            font-size: 0.9rem;
-            color: #555;
-            border-left: 4px solid #0066CC;
-        }
-        
-        .bbox-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
-        }
-        
-        .bbox-row {
-            display: grid;
-            gap: 10px;
-        }
-        
-        .bbox-row.single {
-            grid-template-columns: 1fr;
-        }
-        
-        .bbox-row.double {
-            grid-template-columns: 1fr 1fr;
+        .file-input-text {
+            color: #1e88e5;
+            font-weight: 500;
         }
         
         .checkbox-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
         }
         
-        .checkbox-item {
+        .checkbox-option {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 8px 12px;
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 8px;
+            padding: 12px;
+            border-radius: 12px;
             transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.5);
+            border: 2px solid transparent;
         }
         
-        .checkbox-item:hover {
-            background: rgba(46, 134, 171, 0.1);
+        .checkbox-option:hover {
+            background: rgba(30, 136, 229, 0.1);
         }
         
-        .checkbox-item input[type="checkbox"] {
-            accent-color: #2E86AB;
+        .checkbox-option input[type="checkbox"] {
+            margin-right: 10px;
+            accent-color: #1e88e5;
             transform: scale(1.2);
         }
         
-        .checkbox-item label {
-            margin: 0;
-            cursor: pointer;
-            flex: 1;
+        .checkbox-option:has(input[type="checkbox"]:checked) {
+            background: rgba(30, 136, 229, 0.15);
+            border-color: #1e88e5;
         }
         
-        .select-field {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e1e5e9;
-            border-radius: 12px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.8);
-            cursor: pointer;
+        .bounding-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            align-items: end;
         }
         
-        .select-field:focus {
-            outline: none;
-            border-color: #2E86AB;
-            box-shadow: 0 0 0 3px rgba(46, 134, 171, 0.1);
+        .bounding-box .north {
+            grid-column: 1 / -1;
         }
         
-        .textarea-field {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e1e5e9;
-            border-radius: 12px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.8);
-            resize: vertical;
-            min-height: 80px;
-            font-family: inherit;
-        }
-        
-        .textarea-field:focus {
-            outline: none;
-            border-color: #2E86AB;
-            box-shadow: 0 0 0 3px rgba(46, 134, 171, 0.1);
+        .bounding-box .south {
+            grid-column: 1 / -1;
         }
         
         .button-group {
             display: flex;
             gap: 12px;
-            margin-top: 30px;
+            margin-top: 20px;
         }
         
         .btn {
             flex: 1;
-            padding: 16px 24px;
+            padding: 14px 20px;
             border: none;
             border-radius: 12px;
             font-size: 16px;
@@ -315,13 +216,14 @@
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, #2E86AB, #7CB342);
+            background: linear-gradient(135deg, #1e88e5, #4caf50);
             color: white;
         }
         
         .btn-secondary {
-            background: linear-gradient(135deg, #7CB342, #4CAF50);
-            color: white;
+            background: linear-gradient(135deg, #e3f2fd, #e8f5e8);
+            color: #1e88e5;
+            border: 2px solid #1e88e5;
         }
         
         .btn:hover {
@@ -333,21 +235,23 @@
             transform: translateY(0);
         }
         
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
         .preview {
-            margin-top: 0;
-            padding: 25px;
-            background: rgba(46, 134, 171, 0.05);
+            background: rgba(30, 136, 229, 0.05);
             border-radius: 16px;
-            border-left: 4px solid #2E86AB;
+            padding: 25px;
+            border-left: 4px solid #1e88e5;
             position: sticky;
             top: 20px;
-            height: fit-content;
-            max-height: calc(100vh - 40px);
-            overflow-y: auto;
         }
         
         .preview h3 {
-            color: #2E86AB;
+            color: #1e88e5;
             margin-bottom: 15px;
             font-size: 1.3rem;
         }
@@ -356,94 +260,110 @@
             word-break: break-all;
             font-family: 'Courier New', monospace;
             color: #555;
-            background: rgba(255, 255, 255, 0.8);
-            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
             border-radius: 10px;
             margin-bottom: 15px;
             font-size: 0.9rem;
-            line-height: 1.6;
-            white-space: pre-wrap;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #4caf50;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            opacity: 0;
-            transform: translateY(-20px);
-            transition: all 0.3s ease;
-            z-index: 1000;
-            max-width: 400px;
-        }
-        
-        .toast.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        .toast.error {
-            background: #f44336;
-        }
-        
-        .toast.warning {
-            background: #ff9800;
-        }
-        
-        .toast.info {
-            background: #2196f3;
+            line-height: 1.4;
+            border: 1px solid rgba(30, 136, 229, 0.2);
         }
         
         .notification {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            background: #ff9800;
-            color: white;
-            padding: 15px 20px;
+            padding: 12px 16px;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            opacity: 0;
-            transform: translateY(-20px);
-            transition: all 0.3s ease;
-            z-index: 999;
-            max-width: 350px;
+            margin-bottom: 15px;
             font-size: 0.9rem;
+            display: none;
         }
         
-        .notification.show {
+        .notification.warning {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid #ffc107;
+            color: #856404;
+        }
+        
+        .notification.error {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid #dc3545;
+            color: #721c24;
+        }
+        
+        .notification.info {
+            background: rgba(30, 136, 229, 0.1);
+            border: 1px solid #1e88e5;
+            color: #0d47a1;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            color: #1e88e5;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 300px;
+            background-color: #333;
+            color: #fff;
+            text-align: left;
+            border-radius: 8px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -150px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
             opacity: 1;
-            transform: translateY(0);
         }
         
-        .notification .close-btn {
-            float: right;
-            margin-left: 10px;
-            cursor: pointer;
-            font-weight: bold;
+        .file-list {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            border: 1px solid rgba(30, 136, 229, 0.2);
         }
         
-        .required::after {
-            content: " *";
-            color: #A23B72;
-            font-weight: bold;
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         }
         
-        .invalid {
-            border-color: #f44336 !important;
-            box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1) !important;
+        .file-item:last-child {
+            border-bottom: none;
+        }
+        
+        .file-name {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .file-size {
+            color: #666;
+            font-size: 0.85rem;
         }
         
         @media (max-width: 1200px) {
             .main-content {
                 grid-template-columns: 1fr;
                 gap: 30px;
+            }
+            
+            .preview {
+                position: static;
             }
         }
         
@@ -457,7 +377,7 @@
                 font-size: 1.8rem;
             }
             
-            .bbox-row.double {
+            .checkbox-group {
                 grid-template-columns: 1fr;
             }
             
@@ -465,17 +385,8 @@
                 flex-direction: column;
             }
             
-            .btn {
-                padding: 16px;
-            }
-            
-            .main-content {
-                gap: 20px;
-            }
-            
-            .tooltip .tooltiptext {
-                width: 250px;
-                margin-left: -125px;
+            .bounding-box {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -486,157 +397,146 @@
         
         <div class="main-content">
             <div class="form-section">
-                <!-- Input Files -->
-                <div class="form-group">
-                    <h3>Input Files</h3>
-                    <label for="input-file" class="required">Select Input File(s):</label>
-                    <div class="file-input-wrapper">
-                        <input type="file" id="input-file" class="file-input" multiple accept=".osm,.osc,.osh,.o5m,.o5c,.pbf">
-                        <label for="input-file" class="file-input-label">
-                            📁 Click to select OSM files or drag & drop
-                        </label>
+                <!-- Input Files Section -->
+                <div class="section-card">
+                    <h2 class="section-title">📁 Input Files</h2>
+                    <div class="form-group">
+                        <label>Select Input File(s): <span class="required">*</span></label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="input-files" multiple accept=".osm,.osc,.osh,.o5m,.o5c,.pbf">
+                            <div class="file-input-text">
+                                📁 Click to select OSM files or drag & drop
+                            </div>
+                        </div>
+                        <div id="file-list" class="file-list" style="display: none;"></div>
                     </div>
-                    <div id="file-list" class="file-list" style="display: none;"></div>
                 </div>
 
-                <!-- Output Options -->
-                <div class="form-group">
-                    <h3>Output Options</h3>
-                    <label for="output-format" class="required">Output Format:</label>
-                    <select id="output-format" class="select-field" required>
-                        <option value="osm">.osm (XML format)</option>
-                        <option value="osc">.osc (Change format)</option>
-                        <option value="osh">.osh (History format)</option>
-                        <option value="o5m">.o5m (Binary format)</option>
-                        <option value="o5c">.o5c (Binary change format)</option>
-                        <option value="pbf">.pbf (Protocol Buffer format)</option>
-                        <option value="csv">.csv (Comma-separated values)</option>
-                    </select>
-                    <label for="output-file" class="required">Output File:</label>
-                    <input type="text" id="output-file" class="input-field" placeholder="output.osm" required>
+                <!-- Output Options Section -->
+                <div class="section-card">
+                    <h2 class="section-title">📤 Output Options</h2>
+                    <div class="form-group">
+                        <label for="output-format">Output Format: <span class="required">*</span></label>
+                        <select id="output-format" class="input-field">
+                            <option value=".osm">.osm (XML format)</option>
+                            <option value=".osc">.osc (Change format)</option>
+                            <option value=".osh">.osh (History format)</option>
+                            <option value=".o5m">.o5m (Binary format)</option>
+                            <option value=".o5c">.o5c (Binary change format)</option>
+                            <option value=".pbf">.pbf (Protocol Buffer format)</option>
+                            <option value=".csv">.csv (Comma-separated values)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="output-file">Output File: <span class="required">*</span></label>
+                        <input type="text" id="output-file" class="input-field" placeholder="output.osm" value="output.osm" required>
+                    </div>
                 </div>
 
-                <!-- Geographical Filters -->
-                <div class="form-group">
-                    <h3>Geographical Filters</h3>
-                    <label>Bounding Box (longitude, latitude):</label>
-                    <div class="bbox-container">
-                        <div class="bbox-row single">
-                            <input type="text" id="north" class="input-field" placeholder="North Latitude (top)">
-                        </div>
-                        <div class="bbox-row double">
-                            <input type="text" id="west" class="input-field" placeholder="West Longitude (left)">
-                            <input type="text" id="east" class="input-field" placeholder="East Longitude (right)">
-                        </div>
-                        <div class="bbox-row single">
-                            <input type="text" id="south" class="input-field" placeholder="South Latitude (bottom)">
+                <!-- Geographical Filters Section -->
+                <div class="section-card">
+                    <h2 class="section-title">🌍 Geographical Filters</h2>
+                    <div class="form-group">
+                        <label>Bounding Box (longitude, latitude):</label>
+                        <div class="bounding-box">
+                            <input type="number" id="north" class="input-field north" placeholder="North Latitude (top)" step="any">
+                            <input type="number" id="west" class="input-field" placeholder="West Longitude (left)" step="any">
+                            <input type="number" id="east" class="input-field" placeholder="East Longitude (right)" step="any">
+                            <input type="number" id="south" class="input-field south" placeholder="South Latitude (bottom)" step="any">
                         </div>
                     </div>
-                    
-                    <label for="border-polygon">Border Polygon File:</label>
-                    <div class="file-input-wrapper">
-                        <input type="file" id="border-polygon" class="file-input" accept=".poly,.osm">
-                        <label for="border-polygon" class="file-input-label">
-                            📐 Select polygon file (.poly or .osm)
-                        </label>
+                    <div class="form-group">
+                        <label for="border-polygon">Border Polygon File:</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="border-polygon" accept=".poly,.osm">
+                            <div class="file-input-text">
+                                📐 Select polygon file (.poly or .osm)
+                            </div>
+                        </div>
                     </div>
-                    <div id="polygon-file-name" class="file-list" style="display: none;"></div>
-                    
                     <div class="checkbox-group">
-                        <div class="checkbox-item">
+                        <div class="checkbox-option">
                             <input type="checkbox" id="complete-ways">
                             <label for="complete-ways">Complete Ways</label>
                         </div>
-                        <div class="checkbox-item">
+                        <div class="checkbox-option">
                             <input type="checkbox" id="complex-multipolygons">
                             <label for="complex-multipolygons">Complex Multipolygons/Boundaries</label>
                         </div>
-                        <div class="checkbox-item">
+                        <div class="checkbox-option">
                             <input type="checkbox" id="drop-broken-refs">
                             <label for="drop-broken-refs">Drop Broken References</label>
                         </div>
                     </div>
                 </div>
 
-                <!-- Data Modification -->
-                <div class="form-group">
-                    <h3>Data Modification</h3>
+                <!-- Data Modification Section -->
+                <div class="section-card">
+                    <h2 class="section-title">✏️ Data Modification</h2>
                     <div class="checkbox-group">
-                        <div class="checkbox-item">
+                        <div class="checkbox-option">
                             <input type="checkbox" id="drop-author">
                             <label for="drop-author">Drop Author Information</label>
                         </div>
-                        <div class="checkbox-item">
+                        <div class="checkbox-option">
                             <input type="checkbox" id="drop-version">
                             <label for="drop-version">Drop Version Information</label>
                         </div>
-                        <div class="checkbox-item">
+                        <div class="checkbox-option">
                             <input type="checkbox" id="fake-author">
                             <label for="fake-author">Fake Author Information</label>
                         </div>
-                        <div class="checkbox-item">
+                        <div class="checkbox-option">
                             <input type="checkbox" id="fake-version">
                             <label for="fake-version">Fake Version Information</label>
                         </div>
                     </div>
-                    <label for="modify-tags">Modify Tags:</label>
-                    <textarea id="modify-tags" class="textarea-field" placeholder="e.g., highway=primary to =secondary"></textarea>
+                    <div class="form-group">
+                        <label for="modify-tags">Modify Tags:</label>
+                        <textarea id="modify-tags" class="input-field" rows="3" placeholder="Example: highway=primary,secondary"></textarea>
+                    </div>
                 </div>
 
-                <!-- Advanced Options -->
-                <div class="form-group">
-                    <h3>Advanced Options</h3>
-                    <label for="hash-memory">
-                        Hash Memory (GB):
-                        <span class="tooltip">ℹ️
-                            <span class="tooltiptext">
-                                Memory used for hash tables to track OSM objects during processing. Higher values improve performance for large files but use more RAM. Default is 1.2GB split between nodes (80%), ways (12.5%), and relations (7.5%).<br><br>
-                                <strong>Recommendations by system:</strong><br>
-                                • 16GB RAM: 1-8GB hash memory<br>
-                                • 32GB RAM: 8-24GB hash memory<br>
-                                • 64GB RAM: 16-48GB hash memory<br>
-                                • 128GB RAM: 32-96GB hash memory<br><br>
-                                <strong>By dataset size:</strong><br>
-                                • Small extracts: 1-4GB<br>
-                                • Countries: 8-16GB<br>
-                                • Large regions: 16-32GB<br>
-                                • Planet files: 32GB+<br><br>
-                                Reserve ~8GB for system operations. The tool will warn if values seem too high for your detected system.
+                <!-- Advanced Options Section -->
+                <div class="section-card">
+                    <h2 class="section-title">⚙️ Advanced Options</h2>
+                    <div class="form-group">
+                        <label for="hash-memory">
+                            Hash Memory (GB): 
+                            <span class="tooltip">ℹ️
+                                <span class="tooltiptext">Memory allocated for hash tables. Higher values improve performance for large files but use more RAM. Recommended: 1-4GB for most files.</span>
                             </span>
-                        </span>
-                    </label>
-                    <input type="number" id="hash-memory" class="input-field" placeholder="1.2" min="0.1" max="128" step="0.1">
-                    
-                    <label for="max-objects">
-                        Max Objects:
-                        <span class="tooltip">ℹ️
-                            <span class="tooltiptext">
-                                Maximum number of OSM objects that can be processed when using --all-to-nodes option. Increase if processing very large datasets. Default: 25 million objects.
+                        </label>
+                        <input type="number" id="hash-memory" class="input-field" min="0.1" max="128" step="0.1" placeholder="Auto">
+                    </div>
+                    <div class="form-group">
+                        <label for="max-objects">
+                            Max Objects: 
+                            <span class="tooltip">ℹ️
+                                <span class="tooltiptext">Maximum number of objects to process. Useful for limiting memory usage or creating samples.</span>
                             </span>
-                        </span>
-                    </label>
-                    <input type="number" id="max-objects" class="input-field" placeholder="25000000" min="1000" max="1000000000">
-                    
-                    <label for="max-refs">
-                        Max References:
-                        <span class="tooltip">ℹ️
-                            <span class="tooltiptext">
-                                Maximum number of node references per way. Increase if working with complex geometries from converted shapefiles. Default: 100,000 references per way.
+                        </label>
+                        <input type="number" id="max-objects" class="input-field" min="1000" max="1000000000" placeholder="Unlimited">
+                    </div>
+                    <div class="form-group">
+                        <label for="max-refs">
+                            Max References: 
+                            <span class="tooltip">ℹ️
+                                <span class="tooltiptext">Maximum number of references to process. Helps control memory usage for complex datasets.</span>
                             </span>
-                        </span>
-                    </label>
-                    <input type="number" id="max-refs" class="input-field" placeholder="100000" min="1000" max="10000000">
-                    
+                        </label>
+                        <input type="number" id="max-refs" class="input-field" min="1000" max="10000000" placeholder="Unlimited">
+                    </div>
                     <div class="checkbox-group">
-                        <div class="checkbox-item">
+                        <div class="checkbox-option">
                             <input type="checkbox" id="verbose">
                             <label for="verbose">Verbose Mode</label>
                         </div>
-                        <div class="checkbox-item">
+                        <div class="checkbox-option">
                             <input type="checkbox" id="statistics">
                             <label for="statistics">Show Statistics</label>
                         </div>
-                        <div class="checkbox-item">
+                        <div class="checkbox-option">
                             <input type="checkbox" id="all-to-nodes">
                             <label for="all-to-nodes">Convert Ways/Relations to Nodes</label>
                         </div>
@@ -645,63 +545,238 @@
 
                 <div class="button-group">
                     <button class="btn btn-primary" onclick="generateCommand()">🔧 Generate Command</button>
-                    <button class="btn btn-secondary" onclick="copyCommand()">📋 Copy Command</button>
+                    <button class="btn btn-secondary" onclick="copyCommand()" id="copy-btn" disabled>📋 Copy Command</button>
                 </div>
             </div>
             
             <div class="output-section">
-                <div class="preview" id="preview">
+                <div class="preview">
                     <h3>Generated Command</h3>
-                    <div class="preview-command" id="command-preview">osmconvert [select input files and options]</div>
+                    <div id="notifications"></div>
+                    <div class="preview-command" id="command-preview">osmconvert</div>
                 </div>
             </div>
         </div>
     </div>
     
-    <div class="toast" id="toast"></div>
-    <div class="notification" id="notification" style="display: none;">
-        <span class="close-btn" onclick="dismissNotification()">&times;</span>
-        <div id="notification-content"></div>
-    </div>
-    
     <script>
-        let notificationDismissed = false;
-        
-        // File input handlers
-        document.getElementById('input-file').addEventListener('change', function(e) {
-            const files = Array.from(e.target.files);
+        let selectedFiles = [];
+        let generatedCommand = '';
+
+        // File handling - SAFE for large files (only reads filename and size, not content)
+        document.getElementById('input-files').addEventListener('change', function(e) {
+            selectedFiles = Array.from(e.target.files);
+            updateFileList();
+            updatePreview();
+        });
+
+        function updateFileList() {
             const fileList = document.getElementById('file-list');
-            
-            if (files.length > 0) {
-                fileList.style.display = 'block';
-                fileList.innerHTML = '<strong>Selected files:</strong><br>' + 
-                    files.map(file => `📄 ${file.name} (${formatFileSize(file.size)})`).join('<br>');
-            } else {
+            if (selectedFiles.length === 0) {
                 fileList.style.display = 'none';
+                return;
             }
-            updatePreview();
-        });
 
-        document.getElementById('border-polygon').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            const fileDisplay = document.getElementById('polygon-file-name');
+            fileList.style.display = 'block';
+            fileList.innerHTML = selectedFiles.map(file => `
+                <div class="file-item">
+                    <span class="file-name">${file.name}</span>
+                    <span class="file-size">${formatFileSize(file.size)}</span>
+                </div>
+            `).join('');
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function clearNotifications() {
+            document.getElementById('notifications').innerHTML = '';
+        }
+
+        function showNotification(message, type = 'info') {
+            const notifications = document.getElementById('notifications');
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            notification.style.display = 'block';
+            notifications.appendChild(notification);
+        }
+
+        function validateFilename(filename) {
+            // Check for invalid characters
+            const invalidChars = /[<>:"/\\|?*\x00-\x1f]/;
+            if (invalidChars.test(filename)) {
+                return 'Filename contains invalid characters';
+            }
+
+            // Check for reserved names (Windows)
+            const reservedNames = /^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(\.|$)/i;
+            if (reservedNames.test(filename)) {
+                return 'Filename uses a reserved name';
+            }
+
+            return null;
+        }
+
+        function checkFormatMismatch() {
+            const filename = document.getElementById('output-file').value.trim();
+            const format = document.getElementById('output-format').value;
             
-            if (file) {
-                fileDisplay.style.display = 'block';
-                fileDisplay.innerHTML = `<strong>Polygon file:</strong><br>📐 ${file.name}`;
-            } else {
-                fileDisplay.style.display = 'none';
+            if (filename && !filename.endsWith(format)) {
+                const expectedExt = format;
+                showNotification(`Format mismatch: Expected ${expectedExt} extension`, 'warning');
             }
-            updatePreview();
-        });
+        }
 
-        // Hash memory change handler with smart notification
-        document.getElementById('hash-memory').addEventListener('input', function(e) {
-            const value = parseFloat(e.target.value);
-            if (value) {
-                checkMemoryUsage(value);
+        function generateCommand() {
+            clearNotifications();
+            
+            if (selectedFiles.length === 0) {
+                showNotification('Please select at least one input file', 'error');
+                return;
             }
-        });
+
+            const outputFile = document.getElementById('output-file').value.trim();
+            if (!outputFile) {
+                showNotification('Please specify an output file', 'error');
+                return;
+            }
+
+            // Validate filename
+            const filenameError = validateFilename(outputFile);
+            if (filenameError) {
+                showNotification(filenameError, 'error');
+                return;
+            }
+
+            // Check format mismatch
+            checkFormatMismatch();
+
+            let command = 'osmconvert';
+            
+            // Add input files (only filenames, never file content)
+            selectedFiles.forEach(file => {
+                command += ` "${file.name}"`;
+            });
+
+            // Add output format
+            const format = document.getElementById('output-format').value;
+            if (format === '.osm') command += ' --out-osm';
+            else if (format === '.osc') command += ' --out-osc';
+            else if (format === '.osh') command += ' --out-osh';
+            else if (format === '.o5m') command += ' --out-o5m';
+            else if (format === '.o5c') command += ' --out-o5c';
+            else if (format === '.pbf') command += ' --out-pbf';
+            else if (format === '.csv') command += ' --out-csv';
+
+            // Add output file
+            command += ` -o="${outputFile}"`;
+
+            // Add bounding box if specified
+            const north = document.getElementById('north').value;
+            const south = document.getElementById('south').value;
+            const west = document.getElementById('west').value;
+            const east = document.getElementById('east').value;
+            
+            if (north && south && west && east) {
+                command += ` -b=${west},${south},${east},${north}`;
+            }
+
+            // Add polygon file if specified
+            const polygonFile = document.getElementById('border-polygon').files[0];
+            if (polygonFile) {
+                command += ` -B="${polygonFile.name}"`;
+            }
+
+            // Add checkboxes
+            if (document.getElementById('complete-ways').checked) command += ' --complete-ways';
+            if (document.getElementById('complex-multipolygons').checked) command += ' --complex-multipolygons';
+            if (document.getElementById('drop-broken-refs').checked) command += ' --drop-broken-refs';
+            if (document.getElementById('drop-author').checked) command += ' --drop-author';
+            if (document.getElementById('drop-version').checked) command += ' --drop-version';
+            if (document.getElementById('fake-author').checked) command += ' --fake-author';
+            if (document.getElementById('fake-version').checked) command += ' --fake-version';
+            if (document.getElementById('verbose').checked) command += ' --verbose';
+            if (document.getElementById('statistics').checked) command += ' --statistics';
+            if (document.getElementById('all-to-nodes').checked) command += ' --all-to-nodes';
+
+            // Add modify tags
+            const modifyTags = document.getElementById('modify-tags').value.trim();
+            if (modifyTags) {
+                command += ` --modify-tags="${modifyTags}"`;
+            }
+
+            // Add advanced options
+            const hashMemory = document.getElementById('hash-memory').value;
+            if (hashMemory) {
+                const hashMemoryMB = Math.round(parseFloat(hashMemory) * 1024);
+                command += ` --hash-memory=${hashMemoryMB}`;
+            }
+
+            const maxObjects = document.getElementById('max-objects').value;
+            if (maxObjects) {
+                command += ` --max-objects=${maxObjects}`;
+            }
+
+            const maxRefs = document.getElementById('max-refs').value;
+            if (maxRefs) {
+                command += ` --max-refs=${maxRefs}`;
+            }
+
+            generatedCommand = command;
+            document.getElementById('command-preview').textContent = command;
+            document.getElementById('copy-btn').disabled = false;
+        }
+
+        function generateCommandSilent() {
+            // Silent version for live preview - doesn't show notifications
+            if (selectedFiles.length === 0) return 'osmconvert';
+
+            let command = 'osmconvert';
+            
+            selectedFiles.forEach(file => {
+                command += ` "${file.name}"`;
+            });
+
+            const format = document.getElementById('output-format').value;
+            if (format === '.osm') command += ' --out-osm';
+            else if (format === '.osc') command += ' --out-osc';
+            else if (format === '.osh') command += ' --out-osh';
+            else if (format === '.o5m') command += ' --out-o5m';
+            else if (format === '.o5c') command += ' --out-o5c';
+            else if (format === '.pbf') command += ' --out-pbf';
+            else if (format === '.csv') command += ' --out-csv';
+
+            const outputFile = document.getElementById('output-file').value.trim();
+            if (outputFile) {
+                command += ` -o="${outputFile}"`;
+            }
+
+            return command;
+        }
+
+        function updatePreview() {
+            const command = generateCommandSilent();
+            document.getElementById('command-preview').textContent = command;
+        }
+
+        function copyCommand() {
+            if (!generatedCommand) {
+                showNotification('Please generate a command first', 'error');
+                return;
+            }
+
+            navigator.clipboard.writeText(generatedCommand).then(() => {
+                showNotification('Command copied to clipboard!', 'info');
+            }).catch(() => {
+                showNotification('Failed to copy command', 'error');
+            });
+        }
 
         // Auto-update preview on input changes
         document.querySelectorAll('input, select, textarea').forEach(element => {
@@ -712,438 +787,14 @@
         // Special handling for format dropdown to clear notifications immediately
         document.getElementById('output-format').addEventListener('change', function() {
             clearNotifications();
-            setTimeout(updatePreview, 50); // Small delay to ensure DOM is updated
+            setTimeout(updatePreview, 50);
         });
 
         // Special handling for output filename to clear notifications immediately
         document.getElementById('output-file').addEventListener('input', function() {
             clearNotifications();
-            setTimeout(updatePreview, 50); // Small delay to ensure DOM is updated
+            setTimeout(updatePreview, 50);
         });
-
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        }
-
-        function detectSystemMemory() {
-            // Try multiple methods to detect system memory
-            let detectedRAM = null;
-            let detectionMethod = 'unknown';
-            
-            // Method 1: navigator.deviceMemory (limited, often capped at 8GB)
-            if (navigator.deviceMemory) {
-                detectedRAM = navigator.deviceMemory;
-                detectionMethod = 'deviceMemory';
-            }
-            
-            // Method 2: Try to estimate from performance characteristics
-            if (!detectedRAM || detectedRAM <= 8) {
-                try {
-                    // Use performance.memory if available (Chrome/Edge)
-                    if (performance.memory) {
-                        const jsHeapLimit = performance.memory.jsHeapSizeLimit;
-                        // Rough estimation: JS heap limit is typically 1/4 to 1/8 of total RAM
-                        const estimatedRAM = Math.round((jsHeapLimit / (1024 * 1024 * 1024)) * 6);
-                        if (estimatedRAM > detectedRAM) {
-                            detectedRAM = estimatedRAM;
-                            detectionMethod = 'jsHeapEstimate';
-                        }
-                    }
-                } catch (e) {
-                    // Ignore errors
-                }
-            }
-            
-            // Method 3: Hardware concurrency hint (very rough estimate)
-            if (!detectedRAM || detectedRAM <= 8) {
-                const cores = navigator.hardwareConcurrency || 4;
-                // Very rough estimate: 2-4GB per core for modern systems
-                const estimatedRAM = cores * 3;
-                if (estimatedRAM > detectedRAM) {
-                    detectedRAM = estimatedRAM;
-                    detectionMethod = 'coreEstimate';
-                }
-            }
-            
-            return { ram: detectedRAM, method: detectionMethod };
-        }
-
-        function checkMemoryUsage(memoryGB) {
-            const systemInfo = detectSystemMemory();
-            const detectedRAM = systemInfo.ram;
-            const detectionMethod = systemInfo.method;
-            
-            // Dynamic thresholds based on detected system memory
-            let highThreshold, veryHighThreshold, moderateThreshold;
-            let systemContext = '';
-            
-            if (detectedRAM && detectedRAM >= 64) {
-                // High-end system (64GB+)
-                moderateThreshold = 16;
-                highThreshold = 48;
-                veryHighThreshold = Math.max(64, detectedRAM * 0.75); // 75% of detected RAM
-                systemContext = ` (Detected: ~${detectedRAM}GB RAM)`;
-            } else if (detectedRAM && detectedRAM >= 32) {
-                // Mid-high system (32-64GB)
-                moderateThreshold = 12;
-                highThreshold = 24;
-                veryHighThreshold = 40;
-                systemContext = ` (Detected: ~${detectedRAM}GB RAM)`;
-            } else if (detectedRAM && detectedRAM >= 16) {
-                // Mid-range system (16-32GB)
-                moderateThreshold = 8;
-                highThreshold = 16;
-                veryHighThreshold = 24;
-                systemContext = ` (Detected: ~${detectedRAM}GB RAM)`;
-            } else {
-                // Default/low-end system or detection failed
-                moderateThreshold = 8;
-                highThreshold = 16;
-                veryHighThreshold = 32;
-                if (detectedRAM) {
-                    systemContext = ` (Detected: ~${detectedRAM}GB RAM)`;
-                } else {
-                    systemContext = ' (RAM detection limited by browser)';
-                }
-            }
-            
-            // Apply dynamic thresholds - warn about potential issues, not system requirements
-            if (memoryGB > veryHighThreshold) {
-                showNotification(
-                    `🚨 Warning: ${memoryGB}GB hash memory may exceed your system capacity${systemContext}. This could cause performance issues or system instability. Consider reducing if you experience problems.`,
-                    'warning'
-                );
-            } else if (memoryGB > highThreshold) {
-                showNotification(
-                    `⚠️ Caution: ${memoryGB}GB hash memory is high for your system${systemContext}. Monitor performance and reduce if you experience slowdowns or memory pressure.`,
-                    'info'
-                );
-            } else if (memoryGB > moderateThreshold) {
-                showNotification(
-                    `💡 Notice: ${memoryGB}GB hash memory is moderate usage${systemContext}. Should work fine, but watch for any performance issues during processing.`,
-                    'info'
-                );
-            }
-            // No notification for values below moderate threshold
-        }
-
-        function generateCommand() {
-            let command = "osmconvert";
-            let valid = true;
-            const errors = [];
-
-            // Clear previous validation
-            document.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
-
-            // Input files - only use filenames, don't try to read content
-            const inputFiles = document.getElementById('input-file').files;
-            if (inputFiles.length > 0) {
-                const fileNames = Array.from(inputFiles).map(file => file.name).join(' ');
-                command += ` ${fileNames}`;
-            } else {
-                document.getElementById('input-file').classList.add('invalid');
-                errors.push('Please select at least one input file');
-                valid = false;
-            }
-
-            // Output options with validation
-            const outputFormat = document.getElementById('output-format').value;
-            const outputFile = document.getElementById('output-file');
-            const outputFileName = outputFile.value.trim();
-            
-            if (outputFileName) {
-                // Validate filename characters (Linux/Windows safe)
-                const invalidChars = /[<>:"|?*\x00-\x1f]/;
-                const invalidNames = /^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$/i;
-                
-                if (invalidChars.test(outputFileName)) {
-                    outputFile.classList.add('invalid');
-                    errors.push('Output filename contains invalid characters. Avoid: < > : " | ? * and control characters');
-                    valid = false;
-                } else if (invalidNames.test(outputFileName.split('.')[0])) {
-                    outputFile.classList.add('invalid');
-                    errors.push('Output filename uses a reserved name. Avoid: CON, PRN, AUX, NUL, COM1-9, LPT1-9');
-                    valid = false;
-                } else {
-                    // Check if file extension matches selected format
-                    const expectedExt = outputFormat === 'osm' ? '.osm' : 
-                                      outputFormat === 'osc' ? '.osc' :
-                                      outputFormat === 'osh' ? '.osh' :
-                                      outputFormat === 'o5m' ? '.o5m' :
-                                      outputFormat === 'o5c' ? '.o5c' :
-                                      outputFormat === 'pbf' ? '.pbf' :
-                                      outputFormat === 'csv' ? '.csv' : '';
-                    
-                    if (expectedExt && !outputFileName.toLowerCase().endsWith(expectedExt)) {
-                        // Warning, not error - user might know what they're doing
-                        showNotification(
-                            `⚠️ Filename extension doesn't match selected format. Expected: ${expectedExt}`,
-                            'info'
-                        );
-                    }
-                    
-                    command += ` --out-${outputFormat} -o=${outputFileName}`;
-                    outputFile.classList.remove('invalid');
-                }
-            } else {
-                outputFile.classList.add('invalid');
-                errors.push('Please specify an output file name');
-                valid = false;
-            }
-
-            // Bounding Box - using proper WSEN order (west, south, east, north)
-            const west = document.getElementById('west').value.trim();
-            const south = document.getElementById('south').value.trim();
-            const east = document.getElementById('east').value.trim();
-            const north = document.getElementById('north').value.trim();
-            
-            if (west || south || east || north) {
-                if (west && south && east && north) {
-                    command += ` -b=${west},${south},${east},${north}`;
-                } else {
-                    errors.push('All bounding box coordinates must be provided if using bounding box');
-                    [west, south, east, north].forEach((val, idx) => {
-                        const inputs = ['west', 'south', 'east', 'north'];
-                        if (!val) document.getElementById(inputs[idx]).classList.add('invalid');
-                    });
-                    valid = false;
-                }
-            }
-
-            // Border polygon - only use filename
-            const borderPolygon = document.getElementById('border-polygon').files[0];
-            if (borderPolygon) {
-                command += ` -B=${borderPolygon.name}`;
-            }
-
-            // Geographical options
-            if (document.getElementById('complete-ways').checked) {
-                command += ` --complete-ways`;
-            }
-            if (document.getElementById('complex-multipolygons').checked) {
-                command += ` --complex-multipolygons`;
-            }
-            if (document.getElementById('drop-broken-refs').checked) {
-                command += ` --drop-broken-refs`;
-            }
-
-            // Data modification options
-            if (document.getElementById('drop-author').checked) {
-                command += ` --drop-author`;
-            }
-            if (document.getElementById('drop-version').checked) {
-                command += ` --drop-version`;
-            }
-            if (document.getElementById('fake-author').checked) {
-                command += ` --fake-author`;
-            }
-            if (document.getElementById('fake-version').checked) {
-                command += ` --fake-version`;
-            }
-
-            const modifyTags = document.getElementById('modify-tags').value.trim();
-            if (modifyTags) {
-                command += ` --modify-tags="${modifyTags}"`;
-            }
-
-            // Advanced options
-            const hashMemory = document.getElementById('hash-memory').value.trim();
-            if (hashMemory) {
-                // Convert GB to MB for osmconvert
-                const hashMemoryMB = Math.round(parseFloat(hashMemory) * 1024);
-                command += ` --hash-memory=${hashMemoryMB}`;
-            }
-
-            const maxObjects = document.getElementById('max-objects').value.trim();
-            if (maxObjects) {
-                command += ` --max-objects=${maxObjects}`;
-            }
-
-            const maxRefs = document.getElementById('max-refs').value.trim();
-            if (maxRefs) {
-                command += ` --max-refs=${maxRefs}`;
-            }
-
-            if (document.getElementById('verbose').checked) {
-                command += ` --verbose`;
-            }
-            if (document.getElementById('statistics').checked) {
-                command += ` --statistics`;
-            }
-            if (document.getElementById('all-to-nodes').checked) {
-                command += ` --all-to-nodes`;
-            }
-
-            // Display command or errors
-            if (valid) {
-                document.getElementById('command-preview').textContent = command;
-                showToast('✅ Command generated successfully!', 'success');
-            } else {
-                showToast('❌ ' + errors.join('. '), 'error');
-            }
-
-            return command;
-        }
-
-        function clearNotifications() {
-            // Clear any existing notifications
-            const existingToasts = document.querySelectorAll('.toast');
-            existingToasts.forEach(toast => toast.remove());
-        }
-
-        function updatePreview() {
-            // Generate command silently for preview
-            try {
-                const command = generateCommandSilent();
-                document.getElementById('command-preview').textContent = command;
-                
-                // Clear old notifications and check for format mismatch
-                clearNotifications();
-                checkFormatMismatch();
-            } catch (e) {
-                // Ignore errors during preview updates
-                document.getElementById('command-preview').textContent = 'osmconvert [configure options above]';
-            }
-        }
-
-        function checkFormatMismatch() {
-            // Check format/extension mismatch for preview
-            const outputFormat = document.getElementById('output-format').value;
-            const outputFileName = document.getElementById('output-file').value.trim();
-            
-            if (outputFileName) {
-                const expectedExt = outputFormat === 'osm' ? '.osm' : 
-                                  outputFormat === 'osc' ? '.osc' :
-                                  outputFormat === 'osh' ? '.osh' :
-                                  outputFormat === 'o5m' ? '.o5m' :
-                                  outputFormat === 'o5c' ? '.o5c' :
-                                  outputFormat === 'pbf' ? '.pbf' :
-                                  outputFormat === 'csv' ? '.csv' : '';
-                
-                if (expectedExt && !outputFileName.toLowerCase().endsWith(expectedExt)) {
-                    showNotification(
-                        `⚠️ Filename extension doesn't match selected format. Expected: ${expectedExt}`,
-                        'info'
-                    );
-                }
-            }
-        }
-
-        function generateCommandSilent() {
-            // Same as generateCommand but without validation errors/notifications
-            let command = "osmconvert";
-
-            // Input files - only use filenames
-            const inputFiles = document.getElementById('input-file').files;
-            if (inputFiles.length > 0) {
-                const fileNames = Array.from(inputFiles).map(file => file.name).join(' ');
-                command += ` ${fileNames}`;
-            }
-
-            // Output options (simplified for preview)
-            const outputFormat = document.getElementById('output-format').value;
-            const outputFileName = document.getElementById('output-file').value.trim();
-            if (outputFileName) {
-                command += ` --out-${outputFormat} -o=${outputFileName}`;
-            }
-
-            // Bounding Box
-            const west = document.getElementById('west').value.trim();
-            const south = document.getElementById('south').value.trim();
-            const east = document.getElementById('east').value.trim();
-            const north = document.getElementById('north').value.trim();
-            if (west && south && east && north) {
-                command += ` -b=${west},${south},${east},${north}`;
-            }
-
-            // Border polygon
-            const borderPolygon = document.getElementById('border-polygon').files[0];
-            if (borderPolygon) {
-                command += ` -B=${borderPolygon.name}`;
-            }
-
-            // Geographical options
-            if (document.getElementById('complete-ways').checked) command += ` --complete-ways`;
-            if (document.getElementById('complex-multipolygons').checked) command += ` --complex-multipolygons`;
-            if (document.getElementById('drop-broken-refs').checked) command += ` --drop-broken-refs`;
-
-            // Data modification options
-            if (document.getElementById('drop-author').checked) command += ` --drop-author`;
-            if (document.getElementById('drop-version').checked) command += ` --drop-version`;
-            if (document.getElementById('fake-author').checked) command += ` --fake-author`;
-            if (document.getElementById('fake-version').checked) command += ` --fake-version`;
-
-            // Modify tags
-            const modifyTags = document.getElementById('modify-tags').value.trim();
-            if (modifyTags) command += ` --modify-tags="${modifyTags}"`;
-
-            // Advanced options
-            const hashMemory = document.getElementById('hash-memory').value;
-            if (hashMemory) {
-                const memoryMB = Math.round(parseFloat(hashMemory) * 1024);
-                command += ` --hash-memory=${memoryMB}`;
-            }
-
-            const maxObjects = document.getElementById('max-objects').value;
-            if (maxObjects) command += ` --max-objects=${maxObjects}`;
-
-            const maxRefs = document.getElementById('max-refs').value;
-            if (maxRefs) command += ` --max-refs=${maxRefs}`;
-
-            if (document.getElementById('verbose').checked) command += ` --verbose`;
-            if (document.getElementById('statistics').checked) command += ` --statistics`;
-            if (document.getElementById('all-to-nodes').checked) command += ` --all-to-nodes`;
-
-            return command;
-        }
-
-        function copyCommand() {
-            const command = generateCommand();
-            if (command && !document.querySelector('.invalid')) {
-                navigator.clipboard.writeText(command).then(() => {
-                    showToast('📋 Command copied to clipboard!', 'success');
-                }).catch(() => {
-                    showToast('❌ Failed to copy command', 'error');
-                });
-            }
-        }
-
-        function showToast(message, type = 'success') {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.className = `toast ${type}`;
-            toast.classList.add('show');
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-
-        function showNotification(message, type = 'info') {
-            const notification = document.getElementById('notification');
-            const content = document.getElementById('notification-content');
-            
-            content.innerHTML = message;
-            notification.className = `notification ${type}`;
-            notification.style.display = 'block';
-            
-            setTimeout(() => {
-                notification.classList.add('show');
-            }, 100);
-        }
-
-        function dismissNotification() {
-            const notification = document.getElementById('notification');
-            notification.classList.remove('show');
-            
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 300);
-        }
 
         // Initialize preview
         updatePreview();
